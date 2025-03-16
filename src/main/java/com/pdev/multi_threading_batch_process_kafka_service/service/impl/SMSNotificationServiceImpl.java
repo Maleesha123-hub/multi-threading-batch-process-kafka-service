@@ -17,6 +17,7 @@ public class SMSNotificationServiceImpl implements SMSNotificationService {
     private final PersonRepository personRepository;
     private final TwilioSmsService twilioSmsService;
     private final Executor smsExecutor;
+    private List<String> phoneNumbersBatch;
 
     public SMSNotificationServiceImpl(PersonRepository personRepository,
                                       TwilioSmsService twilioSmsService,
@@ -46,6 +47,7 @@ public class SMSNotificationServiceImpl implements SMSNotificationService {
     // Helper method to send SMS to a batch
     private void sendSmsToBatch(List<String> batch, String message) {
         try {
+            phoneNumbersBatch = batch;
             twilioSmsService.sendSms(batch, message); // Call to actual service
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error sending SMS", e);
@@ -69,7 +71,12 @@ public class SMSNotificationServiceImpl implements SMSNotificationService {
     }
 
     @Override
-    public List<String> phoneNumbers() {
+    public List<String> getPhoneNumbersBatch() {
+        return this.phoneNumbersBatch;
+    }
+
+    @Override
+    public List<String> getPhoneNumbers() {
         return personRepository.findPhone();
     }
 }

@@ -6,5 +6,7 @@ public interface SMSNotificationService {
 
     void sendBulkSms(List<String> phoneNumbers);
 
-    List<String> phoneNumbers();
+    List<String> getPhoneNumbersBatch();
+
+    List<String> getPhoneNumbers();
 }

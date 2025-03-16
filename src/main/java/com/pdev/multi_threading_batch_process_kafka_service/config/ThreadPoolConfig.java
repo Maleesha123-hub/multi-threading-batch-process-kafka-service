@@ -1,10 +1,13 @@
 package com.pdev.multi_threading_batch_process_kafka_service.config;
 
+import com.pdev.multi_threading_batch_process_kafka_service.service.SMSNotificationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 public class ThreadPoolConfig {
@@ -22,6 +25,15 @@ public class ThreadPoolConfig {
         executor.setMaxPoolSize(50);    // Max threads
         executor.setQueueCapacity(1000); // Queue capacity
         executor.setThreadNamePrefix("SmsSender-");
+
+        // Set custom RejectedExecutionHandler
+        executor.setRejectedExecutionHandler((r, executor1) -> {
+            // Log or process the rejected task (e.g., log the phone numbers)
+            if (r instanceof SMSNotificationService task) {
+                System.out.println("Task rejected for phone numbers: " + task.getPhoneNumbersBatch());
+            }
+        });
+
         executor.initialize();
         return executor;
     }

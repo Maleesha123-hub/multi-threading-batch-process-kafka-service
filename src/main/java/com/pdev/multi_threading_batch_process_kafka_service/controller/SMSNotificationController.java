@@ -22,6 +22,6 @@ public class SMSNotificationController {
 
     @GetMapping(value = "/get-phone-numbers")
     public ResponseEntity<List<String>> phoneNumbers() {
-        return ResponseEntity.ok(smsNotificationService.phoneNumbers());
+        return ResponseEntity.ok(smsNotificationService.getPhoneNumbers());
     }
 }
