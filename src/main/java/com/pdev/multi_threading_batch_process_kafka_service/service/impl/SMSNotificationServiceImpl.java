@@ -5,7 +5,6 @@ import com.pdev.multi_threading_batch_process_kafka_service.repository.PersonRep
 import com.pdev.multi_threading_batch_process_kafka_service.service.SMSNotificationService;
 import com.pdev.multi_threading_batch_process_kafka_service.service.TwilioSmsService;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,14 +38,17 @@ public class SMSNotificationServiceImpl implements SMSNotificationService {
 
                 // Print the current thread name
                 System.out.println("Processing batch " + "batch" + " in thread " + Thread.currentThread().getName());
-
-                try {
-                    twilioSmsService.sendSms(batch, message);
-
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
+                sendSmsToBatch(batch, message); // Submitting task to executor
             });
+        }
+    }
+
+    // Helper method to send SMS to a batch
+    private void sendSmsToBatch(List<String> batch, String message) {
+        try {
+            twilioSmsService.sendSms(batch, message); // Call to actual service
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error sending SMS", e);
         }
     }
 
